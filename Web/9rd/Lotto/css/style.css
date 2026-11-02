@@ -1,0 +1,248 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px;
+  place-items: center;
+  color: #23332c;
+  background: #f5f7f3;
+  font-family: "Malgun Gothic", sans-serif;
+}
+
+.lotto-card {
+  width: min(100%, 560px);
+  padding: clamp(24px, 6vw, 48px);
+  border: 1px solid #e1e8df;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 50px #29433112;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #63816b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(27px, 6vw, 38px);
+}
+
+.description {
+  margin: 14px 0 30px;
+  color: #69756e;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.draw-area {
+  padding: 22px 14px;
+  border-radius: 14px;
+  background: #f7f9f6;
+}
+
+.frequency-area {
+  margin-top: 20px;
+  padding: 18px 14px;
+  border: 1px solid #e8ede7;
+  border-radius: 14px;
+}
+
+h2 {
+  margin: 0 0 20px;
+  font-size: 16px;
+}
+
+.frequency-area h2 {
+  margin-bottom: 14px;
+}
+
+.numbers {
+  display: flex;
+  min-height: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.frequency-caption {
+  margin: -4px 0 14px;
+  color: #78837b;
+  font-size: 11px;
+}
+
+.frequency-list {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+}
+
+.number-ball {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #dfe7dc;
+  border-radius: 50%;
+  place-items: center;
+  color: #294536;
+  background: #e8f1e7;
+  font-size: 17px;
+  font-weight: 800;
+  animation: pop-in .25s ease both;
+}
+
+.number-ball:nth-child(3n + 2) {
+  color: #80621f;
+  background: #fff1c8;
+}
+
+.number-ball:nth-child(3n) {
+  color: #4a5488;
+  background: #e7eaff;
+}
+
+.frequency-item {
+  display: grid;
+  grid-template-columns: 42px minmax(40px, 1fr) minmax(100px, 126px);
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.frequency-number {
+  color: #294536;
+  font-weight: 800;
+  text-align: right;
+}
+
+.chart-heading {
+  display: grid;
+  grid-template-columns: 42px minmax(40px, 1fr) minmax(100px, 126px);
+  gap: 10px;
+  margin-bottom: 8px;
+  color: #78837b;
+  font-size: 10px;
+  text-align: center;
+}
+
+.frequency-track {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf1ec;
+}
+
+.frequency-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7aaf83, #386849);
+  transition: width .35s ease;
+}
+
+.frequency-value {
+  color: #52665a;
+  text-align: right;
+}
+
+.placeholder {
+  align-self: center;
+  color: #89938c;
+  font-size: 13px;
+}
+
+.analysis-status {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: #52665a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.draw-count {
+  margin: 20px 0;
+  color: #69756e;
+  font-size: 14px;
+}
+
+.probability-note {
+  margin: 18px 0 0;
+  color: #7a837d;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+button:focus-visible {
+  outline: 3px solid #e1a940;
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+.draw-button {
+  color: #fff;
+  background: #386849;
+}
+
+.draw-button:hover {
+  background: #2c543a;
+}
+
+.reset-button {
+  color: #405248;
+  background: #e9eee9;
+}
+
+.reset-button:hover {
+  background: #dce5dc;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 420px) {
+  body { padding: 16px; }
+  .number-ball { width: 40px; height: 40px; }
+  .numbers { gap: 7px; }
+  .frequency-item, .chart-heading {
+    grid-template-columns: 34px minmax(36px, 1fr) minmax(92px, 110px);
+    gap: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>벽돌깨기</title>
+<style>
+  body { margin: 30px auto; max-width: 640px; padding: 0 16px; background: #171b2b; color: white; font-family: sans-serif; text-align: center }
+  canvas { display: block; width: 100%; margin: 16px auto; background: #090d18; border: 1px solid #596080 }
+  button { padding: 10px 24px; background: #806cf0; color: white; border: 0; cursor: pointer }
+</style>
+<h1>벽돌깨기</h1>
+<p id="info">점수: 0 | 목숨: 3</p>
+<canvas id="game" width="600" height="400"></canvas>
+<button id="start">게임 시작</button>
+<p>← → 방향키 또는 마우스로 패들을 움직이세요.</p>
+<script>
+// 게임 화면과 그리기에 사용할 캔버스 도구입니다.
+const gameCanvas = document.querySelector("#game");
+const drawing = gameCanvas.getContext("2d");
+
+// 점수와 시작 버튼을 표시하는 HTML 요소입니다.
+const infoText = document.querySelector("#info");
+const startButton = document.querySelector("#start");
+
+// 패들의 위치와 크기입니다.
+const paddle = { x: 250, y: 370, width: 100, height: 12 };
+
+// 공의 위치, 이동 방향, 크기입니다.
+const ball = { x: 300, y: 350, speedX: 3, speedY: -3, radius: 8 };
+
+// 벽돌에 사용할 색상입니다.
+const brickColors = ["#ff758f", "#ffad66", "#ffd166", "#62d6bd"];
+
+// 벽돌 목록과 현재 게임 상태를 저장합니다.
+let bricks = [];
+let score = 0;
+let lives = 3;
+let isPlaying = false;
+let moveLeft = false;
+let moveRight = false;
+
+// 벽돌 28개를 만들고 점수, 목숨, 공, 패들을 초기 상태로 되돌립니다.
+function resetGame(startImmediately = true) {
+  bricks = Array.from({ length: 28 }, (_, index) => {
+    const row = Math.floor(index / 7);
+    const column = index % 7;
+    return {
+      x: 31 + column * 78,
+      y: 35 + row * 32,
+      color: brickColors[row],
+      isAlive: true
+    };
+  });
+
+  score = 0;
+  lives = 3;
+  paddle.x = 250;
+  Object.assign(ball, { x: 300, y: 350, speedX: 3, speedY: -3 });
+  isPlaying = startImmediately;
+  startButton.disabled = startImmediately;
+  startButton.textContent = startImmediately ? "게임 중" : "게임 시작";
+  infoText.textContent = "점수: 0 | 목숨: 3";
+
+  if (startImmediately) updateGame();
+}
+
+// 배경, 남은 벽돌, 패들, 공을 캔버스에 그립니다.
+function drawGame() {
+  drawing.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+  bricks.forEach((brick) => {
+    if (brick.isAlive) {
+      drawing.fillStyle = brick.color;
+      drawing.fillRect(brick.x, brick.y, 70, 20);
+    }
+  });
+
+  drawing.fillStyle = "#a99aff";
+  drawing.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+  drawing.fillStyle = "white";
+  drawing.beginPath();
+  drawing.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  drawing.fill();
+}
+
+// 한 프레임 동안 공과 패들을 이동시키고 충돌, 점수, 게임 종료를 처리합니다.
+function updateGame() {
+  if (!isPlaying) return;
+
+  paddle.x = Math.max(0, Math.min(
+    gameCanvas.width - paddle.width,
+    paddle.x + (Number(moveRight) - Number(moveLeft)) * 6
+  ));
+
+  ball.x += ball.speedX;
+  ball.y += ball.speedY;
+  if (ball.x < ball.radius || ball.x > gameCanvas.width - ball.radius) ball.speedX *= -1;
+  if (ball.y < ball.radius) ball.speedY *= -1;
+
+  if (ball.speedY > 0 && ball.y + ball.radius >= paddle.y &&
+      ball.x >= paddle.x && ball.x <= paddle.x + paddle.width) {
+    ball.speedY *= -1;
+    ball.speedX = (ball.x - paddle.x - paddle.width / 2) / 12;
+  }
+
+  // 공에 맞은 첫 번째 벽돌을 없애고 점수를 더합니다.
+  const hitBrick = bricks.find((brick) =>
+    brick.isAlive && ball.x > brick.x && ball.x < brick.x + 70 &&
+    ball.y > brick.y && ball.y < brick.y + 20
+  );
+  if (hitBrick) {
+    hitBrick.isAlive = false;
+    ball.speedY *= -1;
+    score += 10;
+  }
+
+  // 공을 놓치면 목숨을 줄이고 공을 처음 위치에 놓습니다.
+  if (ball.y > gameCanvas.height) {
+    lives--;
+    Object.assign(ball, { x: 300, y: 350, speedX: 3, speedY: -3 });
+  }
+
+  infoText.textContent = `점수: ${score} | 목숨: ${lives}`;
+  if (!lives || bricks.every((brick) => !brick.isAlive)) {
+    isPlaying = false;
+    startButton.disabled = false;
+    startButton.textContent = "다시 시작";
+    infoText.textContent += lives ? " | 승리!" : " | 게임 오버";
+  }
+
+  drawGame();
+  if (isPlaying) requestAnimationFrame(updateGame);
+}
+
+// 시작 버튼을 누르면 새 게임을 시작합니다.
+startButton.onclick = () => {
+  if (!isPlaying) resetGame();
+};
+
+// 방향키를 누르거나 놓으면 해당 방향으로 패들이 움직이도록 설정합니다.
+document.onkeydown = (event) => {
+  if (event.key === "ArrowLeft") moveLeft = true;
+  if (event.key === "ArrowRight") moveRight = true;
+};
+document.onkeyup = (event) => {
+  if (event.key === "ArrowLeft") moveLeft = false;
+  if (event.key === "ArrowRight") moveRight = false;
+};
+
+// 마우스 포인터 위치를 따라 패들을 움직입니다.
+gameCanvas.onpointermove = (event) => {
+  const canvasBounds = gameCanvas.getBoundingClientRect();
+  paddle.x = (event.clientX - canvasBounds.left) * gameCanvas.width / canvasBounds.width - paddle.width / 2;
+};
+
+// 게임 시작 전 화면에 벽돌과 공을 표시합니다.
+resetGame(false);
+drawGame();
+</script>

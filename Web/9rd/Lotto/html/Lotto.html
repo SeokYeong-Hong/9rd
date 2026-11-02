@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f3">
+  <title>최근 300회 분석 로또 번호 생성기</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../javascript/script.js" defer></script>
+</head>
+<body>
+  <main class="lotto-card">
+    <p class="eyebrow">LOTTO 6/45 · 최근 300회 분석</p>
+    <h1>로또 번호 분석기</h1>
+    <p class="description">동행복권의 최근 당첨번호 300회 출현 빈도를 분석해 번호 6개를 추천합니다.</p>
+
+    <section class="draw-area" aria-labelledby="numbers-title">
+      <h2 id="numbers-title">분석 기반 추천 번호</h2>
+      <div class="numbers" id="numbers" aria-live="polite" aria-label="생성된 로또 번호">
+        <span class="placeholder">번호 뽑기를 눌러 분석을 시작하세요</span>
+      </div>
+    </section>
+
+    <p class="analysis-status" id="analysis-status" aria-live="polite">공식 당첨 기록을 불러오면 분석이 시작됩니다.</p>
+    <section class="frequency-area" aria-labelledby="frequency-title">
+      <h2 id="frequency-title">1~45번 전체 출현 통계</h2>
+      <p class="frequency-caption">출현 비율 = 해당 번호가 나온 회차 수 ÷ 300회 × 100</p>
+      <div class="chart-heading" aria-hidden="true">
+        <span>번호</span><span>출현 횟수 비교</span><span>횟수 · 비율</span>
+      </div>
+      <div class="frequency-list" id="frequency-list" aria-live="polite">
+        <span class="placeholder">아직 분석하지 않았습니다</span>
+      </div>
+    </section>
+
+    <p class="draw-count" id="draw-count" aria-live="polite">생성 횟수: 0회</p>
+    <p class="probability-note">※ 과거 출현 빈도는 다음 추첨 결과를 예측하거나 당첨 확률을 높여주지 않습니다. 모든 조합의 당첨 확률은 동일하며, 이 추천은 참고용입니다.</p>
+    <div class="buttons">
+      <button class="draw-button" id="draw-button" type="button">번호 뽑기</button>
+      <button class="reset-button" id="reset-button" type="button">초기화</button>
+    </div>
+  </main>
+</body>
+</html>
